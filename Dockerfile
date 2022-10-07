@@ -10,11 +10,11 @@ RUN go build -ldflags "${LDFLAGS}" -o goflow2 cmd/goflow2/main.go
 
 FROM alpine:latest
 ARG src_dir
-ARG VERSION=""
-ARG CREATED=""
-ARG DESCRIPTION=""
-ARG NAME=""
-ARG MAINTAINER=""
+ARG VERSION="1.1.0"
+ARG CREATED="vishnu@aryaka.com"
+ARG DESCRIPTION="goflow2 docker image"
+ARG NAME="goflow2"
+ARG MAINTAINER="vishnu"
 ARG URL=""
 ARG LICENSE=""
 ARG REV=""
@@ -33,4 +33,7 @@ RUN apk update --no-cache && \
 USER flow
 COPY --from=builder /build/goflow2 /
 
-ENTRYPOINT ["./goflow2"]
+EXPOSE 8888/udp
+
+
+ENTRYPOINT ["./goflow2", "-format", "json", "-listen", "nfl://0.0.0.0:8888", "-metrics.addr", "0.0.0.0:8081", "-transport", "bigquery", "-loglevel", "info", "-transport.bigquery.project", "nos-pop-sjc2", "-transport.bigquery.dataset", "fluentd", "-transport.bigquery.table", "netflow_message" ]
